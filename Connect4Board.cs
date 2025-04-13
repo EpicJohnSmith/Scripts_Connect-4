@@ -25,13 +25,86 @@ public class Connect4Board
     }
 
     public bool isWinner(MoveResult result)
+{
+    if (!result.success || result.row < 0 || result.column < 0)
     {
-        //check to see if result was involved in a horizontal win
-        //check to see if result was involved in a vertical win
-        //check to see if result was involved in a diagonal win
-        //return true if yes, and false if no
-        return false;
+        return false; // Invalid move
     }
+
+    string color = result.color;
+    int row = result.row;
+    int col = result.column;
+    
+    // Check horizontal win (left to right)
+    int count = 0;
+    for (int c = Math.Max(0, col - 3); c < Math.Min(columns, col + 4); c++)
+    {
+        if (c >= 0 && c < columns && theBoard[row, c] != null && theBoard[row, c].GetColor() == color)
+        {
+            count++;
+            if (count >= 4) return true;
+        }
+        else
+        {
+            count = 0;
+        }
+    }
+    
+    // Check vertical win (top to bottom)
+    count = 0;
+    for (int r = Math.Max(0, row - 3); r < Math.Min(rows, row + 4); r++)
+    {
+        if (r >= 0 && r < rows && theBoard[r, col] != null && theBoard[r, col].GetColor() == color)
+        {
+            count++;
+            if (count >= 4) return true;
+        }
+        else
+        {
+            count = 0;
+        }
+    }
+    
+    // Check diagonal (top-left to bottom-right)
+    count = 0;
+    for (int i = -3; i <= 3; i++)
+    {
+        int r = row + i;
+        int c = col + i;
+        
+        if (r >= 0 && r < rows && c >= 0 && c < columns && 
+            theBoard[r, c] != null && theBoard[r, c].GetColor() == color)
+        {
+            count++;
+            if (count >= 4) return true;
+        }
+        else
+        {
+            count = 0;
+        }
+    }
+    
+    // Check diagonal (top-right to bottom-left)
+    count = 0;
+    for (int i = -3; i <= 3; i++)
+    {
+        int r = row + i;
+        int c = col - i;
+        
+        if (r >= 0 && r < rows && c >= 0 && c < columns && 
+            theBoard[r, c] != null && theBoard[r, c].GetColor() == color)
+        {
+            count++;
+            if (count >= 4) return true;
+        }
+        else
+        {
+            count = 0;
+        }
+    }
+    
+    return false;
+}
     
     public MoveResult makeMove(int column, string color)
     {
